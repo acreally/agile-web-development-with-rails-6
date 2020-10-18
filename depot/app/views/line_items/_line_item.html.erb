@@ -3,9 +3,10 @@
   <td><%= line_item.product.title %></td>
   <td class="price"><%= number_to_currency(line_item.total_price) %></td>
   <td class="remove">
-    <%= button_to 'Remove',
+    <%= button_to 'X',
       line_item,
-      method: :delete
+      method: :delete,
+      remote: true
     %>
   </td>
 </tr>
