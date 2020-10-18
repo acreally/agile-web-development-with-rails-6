@@ -16,43 +16,35 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create line_item" do
-    assert_difference('LineItem.count') do
-      post line_items_url, params: { product_id: products(:ruby).id }
-    end
+    assert_create_line_item(product: products(:ruby))
+  end
 
-    assert_response :redirect
-    follow_redirect!
+  test "should add multiple line items to cart" do
+    assert_create_line_item(product: products(:one))
+    assert_select "td.quantity", 1
 
-    assert_response :success
-    assert_select 'h2', 'Your Cart'
-    assert_select 'td.quantity', '1'
-    assert_select 'td', "Programming Ruby 1.9"
+    assert_create_line_item(product: products(:two))
+    assert_select "td.quantity", 2
+
+    assert_create_line_item(product: products(:ruby))
+    assert_select "td.quantity", 3
   end
 
   test "should increment quantity of product in line_item" do
+    assert_create_line_item(product: products(:ruby))
+    assert_select "td.quantity", 1
+
+    assert_create_line_item(expected_quantity: '2', expected_line_item_count: 0, product: products(:ruby))
+    assert_select "td.quantity", 1
+  end
+
+  test "should create line_item via ajax" do
     assert_difference('LineItem.count') do
-      post line_items_url, params: { product_id: products(:ruby).id }
+      post line_items_url, params: { product_id: products(:ruby).id }, xhr: true
     end
 
-    assert_response :redirect
-    follow_redirect!
-
     assert_response :success
-    assert_select 'h2', 'Your Cart'
-    assert_select 'td.quantity', '1'
-    assert_select 'td', "Programming Ruby 1.9"
-
-    assert_no_difference('LineItem.count') do
-      post line_items_url, params: { product_id: products(:ruby).id }
-    end
-
-    assert_response :redirect
-    follow_redirect!
-
-    assert_response :success
-    assert_select 'h2', 'Your Cart'
-    assert_select 'td.quantity', '2'
-    assert_select 'td', "Programming Ruby 1.9"
+    assert_match /<tr class=\\"line-item-highlight/, @response.body
   end
 
   test "should show line_item" do
@@ -80,5 +72,21 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to cart_url(@line_item.cart.id)
+  end
+
+  private
+
+  def assert_create_line_item(expected_quantity: '1', expected_line_item_count: 1, product:)
+    assert_difference('LineItem.count', expected_line_item_count) do
+      post line_items_url, params: { product_id: product.id }
+    end
+
+    assert_response :redirect
+    follow_redirect!
+
+    assert_response :success
+    assert_select 'h2', 'Your Cart'
+    assert_select 'td.quantity', expected_quantity
+    assert_select 'td', product.title
   end
 end
