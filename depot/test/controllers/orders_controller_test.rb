@@ -53,4 +53,13 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to orders_url
   end
+
+  test "create with invalid payment type should render new order page" do
+    assert_no_difference('Order.count') do
+      post orders_url, params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_type_id: 999 } }
+    end
+
+    assert_response :success
+  end
+
 end
