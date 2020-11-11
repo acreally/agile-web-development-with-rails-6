@@ -26,15 +26,7 @@
     <%= form.text_field :email, size: 40 %>
   </div>
 
-  <div class="field">
-    <%= form.label :payment_type_id %>
-    <%= form.collection_select :payment_type_id,
-                               PaymentType.all,
-                               :id,
-                               :payment_method,
-                               prompt: 'Select a payment method'
-    %>
-  </div>
+  <div id="pay-type-component"></div>
 
   <div class="actions">
     <%= form.submit 'Place Order' %>
