@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  product: two
+  product_id: 2
   cart_id: 2
 
 two:
-  product: two
+  product_id: 2
   cart_id: 3
   order: one
 
 three:
-  product: ruby
+  product_id: 3 
   cart_id: 3
 

@@ -14,19 +14,16 @@ class LineItemsTest < ApplicationSystemTestCase
     visit line_items_url
     click_on "New Line Item"
 
-    fill_in "Cart", with: @line_item.cart_id
     fill_in "Product", with: @line_item.product_id
     click_on "Create Line item"
 
-    assert_text "Line item was successfully created"
-    click_on "Back"
+    assert_text "Your Pragmatic Catalog"
   end
 
   test "updating a Line item" do
     visit line_items_url
     click_on "Edit", match: :first
 
-    fill_in "Cart", with: @line_item.cart_id
     fill_in "Product", with: @line_item.product_id
     click_on "Update Line item"
 
@@ -40,6 +37,6 @@ class LineItemsTest < ApplicationSystemTestCase
       click_on "Destroy", match: :first
     end
 
-    assert_text "Line item was successfully destroyed"
+    assert_text "Your Cart"
   end
 end
