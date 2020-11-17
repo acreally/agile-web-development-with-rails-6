@@ -9,3 +9,6 @@ one_item:
 many_items:
   id: 3
 
+one:
+  id: 4
+

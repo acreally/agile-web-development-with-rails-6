@@ -15,6 +15,7 @@ class LineItemsTest < ApplicationSystemTestCase
     click_on "New Line Item"
 
     fill_in "Product", with: @line_item.product_id
+    fill_in "Cart", with: @line_item.cart_id
     click_on "Create Line item"
 
     assert_text "Your Pragmatic Catalog"
@@ -25,6 +26,7 @@ class LineItemsTest < ApplicationSystemTestCase
     click_on "Edit", match: :first
 
     fill_in "Product", with: @line_item.product_id
+    fill_in "Cart", with: @line_item.cart_id
     click_on "Update Line item"
 
     assert_text "Line item was successfully updated"
