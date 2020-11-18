@@ -74,6 +74,9 @@ class LineItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def line_item_params
+      # the "Add to cart" button on the catalog page
+      # will not pass in a line item
+      return params if params.has_key?(:product_id)
       params.require(:line_item).permit(:product_id, :cart_id)
     end
 end
