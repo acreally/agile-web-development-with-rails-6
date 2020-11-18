@@ -1,14 +1,10 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-empty:
-  id: 1
+empty: {}
 
-one_item:
-  id: 2
+one_item: {}
 
-many_items:
-  id: 3
+many_items: {}
 
-one:
-  id: 4
+one: {}
 
