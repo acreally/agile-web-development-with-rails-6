@@ -28,6 +28,7 @@ class OrdersTest < ApplicationSystemTestCase
     select "Check", from: "Pay type"
 
     assert_selector "#order_routing_number"
+    assert_selector "#order_account_number"
     fill_in "Routing #", with: "123"
     fill_in "Account #", with: "12345678"
 

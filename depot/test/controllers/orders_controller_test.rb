@@ -25,7 +25,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create order" do
     assert_difference('Order.count') do
-      post orders_url, params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_type_id: @order.payment_type_id } }
+      post orders_url, params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_method: @order.payment_type.payment_method } }
     end
 
     assert_redirected_to store_index_url
@@ -42,7 +42,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update order" do
-    patch order_url(@order), params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_type: @order.payment_type } }
+    patch order_url(@order), params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_method: @order.payment_type.payment_method } }
     assert_redirected_to order_url(@order)
   end
 
@@ -56,7 +56,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
   test "create with invalid payment type should render new order page" do
     assert_no_difference('Order.count') do
-      post orders_url, params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_type_id: 999 } }
+      post orders_url, params: { order: { address: @order.address, email: @order.email, name: @order.name, payment_method: "Buttons" } }
     end
 
     assert_response :success

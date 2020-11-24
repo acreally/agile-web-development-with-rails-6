@@ -75,7 +75,13 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.require(:order).permit(:name, :address, :email, :payment_type_id)
+      order_params = params.require(:order).permit(:name, :address, :email, :payment_method)
+      payment_type = PaymentType.find_by(payment_method: order_params[:payment_method])
+      order_params[:payment_type_id] = payment_type.id
+      order_params.delete(:payment_method)
+      order_params.merge(pay_type_params(payment_type.id))
+      order_params.permit!
+      return order_params
     end
 
     def ensure_cart_isnt_empty
@@ -84,12 +90,12 @@ class OrdersController < ApplicationController
       end
     end
 
-    def pay_type_params
-      if order_params[:payment_type_id] == "1"
+    def pay_type_params(payment_type_id)
+      if payment_type_id == "1"
         params.require(:order).permit(:routing_number, :account_number)
-      elsif order_params[:payment_type_id] == "2"
+      elsif payment_type_id == "2"
         params.require(:order).permit(:credit_card_number, :expiration_date)
-      elsif order_params[:payment_type_id] == "3"
+      elsif payment_type_id == "3"
         params.require(:order).permit(:po_number)
       else
         {}
