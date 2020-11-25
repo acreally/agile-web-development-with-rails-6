@@ -22,7 +22,7 @@ class OrdersTest < ApplicationSystemTestCase
     fill_in "Name", with: @order.name
 
     assert_selector "#order_pay_type"
-    assert_selector "option[value=\"1\"]"
+    assert_selector "option[value=\"Check\"]"
     assert_no_selector "#order_routing_number"
 
     select "Check", from: "Pay type"
@@ -34,8 +34,7 @@ class OrdersTest < ApplicationSystemTestCase
 
     click_on "Place Order"
 
-    assert_text "Order was successfully created"
-    click_on "Back"
+    assert_text "Thank you for your order."
   end
 
   test "updating a Order" do
