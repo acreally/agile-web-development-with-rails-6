@@ -48,6 +48,22 @@ class OrdersTest < ApplicationSystemTestCase
     assert_text "Thank you for your order."
   end
 
+  test "creating a Order using purchase order as a payment method" do
+    arrange_create_order("Purchase order")
+
+    assert_no_selector "#order_po_number"
+
+    select "Purchase order", from: "Pay type"
+
+    assert_selector "#order_po_number"
+
+    fill_in "PO #", with: "12345678"
+
+    click_on "Place Order"
+
+    assert_text "Thank you for your order."
+  end
+
   test "updating a Order" do
     visit orders_url
     click_on "Edit", match: :first
