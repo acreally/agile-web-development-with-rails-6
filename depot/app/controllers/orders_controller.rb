@@ -77,10 +77,12 @@ class OrdersController < ApplicationController
     def order_params
       order_params = params.require(:order).permit(:name, :address, :email, :payment_method)
       payment_type = PaymentType.find_by(payment_method: order_params[:payment_method])
-      order_params[:payment_type_id] = payment_type.id
       order_params.delete(:payment_method)
-      order_params.merge(pay_type_params(payment_type.id))
-      order_params.permit!
+      unless payment_type.nil?
+        order_params[:payment_type_id] = payment_type.id
+        order_params.merge(pay_type_params(payment_type.id))
+        order_params.permit!
+      end
       return order_params
     end
 
