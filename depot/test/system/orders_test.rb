@@ -11,24 +11,16 @@ class OrdersTest < ApplicationSystemTestCase
   end
 
   test "creating a Order using check as a payment method" do
-    # first, add an item to a cart because
-    # we cannot create an order with an empty cart
-    visit store_index_url
-    click_on "Add to Cart", match: :first
-    click_on "Checkout"
+    arrange_create_order("Check")
 
-    fill_in "Address", with: @order.address
-    fill_in "Email", with: @order.email
-    fill_in "Name", with: @order.name
-
-    assert_selector "#order_pay_type"
-    assert_selector "option[value=\"Check\"]"
     assert_no_selector "#order_routing_number"
+    assert_no_selector "#order_account_number"
 
     select "Check", from: "Pay type"
 
     assert_selector "#order_routing_number"
     assert_selector "#order_account_number"
+
     fill_in "Routing #", with: "123"
     fill_in "Account #", with: "12345678"
 
@@ -58,5 +50,22 @@ class OrdersTest < ApplicationSystemTestCase
     end
 
     assert_text "Order was successfully destroyed"
+  end
+
+  private
+
+  def arrange_create_order(payment_method)
+    # first, add an item to a cart because
+    # we cannot create an order with an empty cart
+    visit store_index_url
+    click_on "Add to Cart", match: :first
+    click_on "Checkout"
+
+    fill_in "Address", with: @order.address
+    fill_in "Email", with: @order.email
+    fill_in "Name", with: @order.name
+
+    assert_selector "#order_pay_type"
+    assert_selector "option[value=\"#{payment_method}\"]"
   end
 end
