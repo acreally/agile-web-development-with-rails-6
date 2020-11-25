@@ -29,6 +29,25 @@ class OrdersTest < ApplicationSystemTestCase
     assert_text "Thank you for your order."
   end
 
+  test "creating a Order using credit card as a payment method" do
+    arrange_create_order("Credit card")
+
+    assert_no_selector "#order_credit_card_number"
+    assert_no_selector "#order_expiration_date"
+
+    select "Credit card", from: "Pay type"
+
+    assert_selector "#order_credit_card_number"
+    assert_selector "#order_expiration_date"
+
+    fill_in "CC #", with: "4111111111111111"
+    fill_in "Expiry", with: "01/25"
+
+    click_on "Place Order"
+
+    assert_text "Thank you for your order."
+  end
+
   test "updating a Order" do
     visit orders_url
     click_on "Edit", match: :first
