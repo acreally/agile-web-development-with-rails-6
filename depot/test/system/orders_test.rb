@@ -71,8 +71,11 @@ class OrdersTest < ApplicationSystemTestCase
     fill_in "Address", with: @order.address
     fill_in "Email", with: @order.email
     fill_in "Name", with: @order.name
-    fill_in "Pay type", with: @order.payment_type
-    click_on "Update Order"
+    select "Check", from: "Pay type"
+    fill_in "Routing #", with: "123"
+    fill_in "Account #", with: "12345678"
+
+    click_on "Place Order"
 
     assert_text "Order was successfully updated"
     click_on "Back"
