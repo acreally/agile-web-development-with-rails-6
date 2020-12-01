@@ -15,7 +15,7 @@ class Order < ApplicationRecord
     payment_details = {}
     payment_method = nil
 
-    case pay_type
+    case payment_type.payment_method
     when "Check"
       payment_method = :check
       payment_details[:routing] = pay_type_params[:routing_number]
