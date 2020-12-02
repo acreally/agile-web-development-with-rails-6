@@ -11,3 +11,10 @@ two:
   address: MyText
   email: MyString
   payment_type: two
+
+three:
+  name: Thomas Dave
+  address: 123 Fake St\r\nTownsville, CA\r\nUSA\r\n90210
+  email: thomas@example.com
+  payment_type: three
+
