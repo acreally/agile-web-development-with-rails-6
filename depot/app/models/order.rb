@@ -1,3 +1,5 @@
+require './lib/pago'
+
 class Order < ApplicationRecord
   has_many :line_items, dependent: :destroy
   belongs_to :payment_type
