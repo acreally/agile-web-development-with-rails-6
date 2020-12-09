@@ -1,6 +1,8 @@
 require "application_system_test_case"
 
 class OrdersTest < ApplicationSystemTestCase
+  include ActiveJob::TestHelper
+
   setup do
     @order = orders(:one)
   end
@@ -15,18 +17,13 @@ class OrdersTest < ApplicationSystemTestCase
 
     assert_no_selector "#order_routing_number"
     assert_no_selector "#order_account_number"
-
     select "Check", from: "Pay type"
-
     assert_selector "#order_routing_number"
     assert_selector "#order_account_number"
-
     fill_in "Routing #", with: "123"
     fill_in "Account #", with: "12345678"
 
-    click_on "Place Order"
-
-    assert_text "Thank you for your order."
+    assert_create_order("Check")
   end
 
   test "creating a Order using credit card as a payment method" do
@@ -34,34 +31,24 @@ class OrdersTest < ApplicationSystemTestCase
 
     assert_no_selector "#order_credit_card_number"
     assert_no_selector "#order_expiration_date"
-
     select "Credit card", from: "Pay type"
-
     assert_selector "#order_credit_card_number"
     assert_selector "#order_expiration_date"
-
     fill_in "CC #", with: "4111111111111111"
     fill_in "Expiry", with: "01/25"
 
-    click_on "Place Order"
-
-    assert_text "Thank you for your order."
+    assert_create_order("Credit card")
   end
 
   test "creating a Order using purchase order as a payment method" do
     arrange_create_order("Purchase order")
 
     assert_no_selector "#order_po_number"
-
     select "Purchase order", from: "Pay type"
-
     assert_selector "#order_po_number"
-
     fill_in "PO #", with: "12345678"
 
-    click_on "Place Order"
-
-    assert_text "Thank you for your order."
+    assert_create_order("Purchase order")
   end
 
   test "updating a Order" do
@@ -93,7 +80,10 @@ class OrdersTest < ApplicationSystemTestCase
   private
 
   def arrange_create_order(payment_method)
-    # first, add an item to a cart because
+    LineItem.delete_all
+    Order.delete_all
+
+    # add an item to a cart because
     # we cannot create an order with an empty cart
     visit store_index_url
     click_on "Add to Cart", match: :first
@@ -105,5 +95,30 @@ class OrdersTest < ApplicationSystemTestCase
 
     assert_selector "#order_pay_type"
     assert_selector "option[value=\"#{payment_method}\"]"
+  end
+
+  def assert_create_order(expected_payment_method)
+    perform_enqueued_jobs do
+      click_on "Place Order"
+    end
+
+    assert_text "Thank you for your order."
+
+    orders = Order.all
+    assert_equal 1, orders.size
+
+    order = orders.first
+
+    assert_equal @order.name, order.name
+    assert_equal @order.address, order.address
+    assert_equal @order.email, order.email
+    assert_equal expected_payment_method, order.payment_type.payment_method
+    assert_equal 1, order.line_items.size
+
+    mail = ActionMailer::Base.deliveries.last
+    assert_equal [@order.email], mail.to
+    assert_equal 'Sam Ruby <depot@example.com>', mail[:from].value
+    assert_equal 'Pragmatic Store Order Confirmation', mail.subject
+
   end
 end

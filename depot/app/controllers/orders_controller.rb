@@ -34,7 +34,7 @@ class OrdersController < ApplicationController
       if @order.save
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
-        ChargeOrderJob.perform_later(@order, pay_type_params(@order.payment_type.id).to_h)
+        ChargeOrderJob.perform_later(@order, pay_type_params(@order.payment_type.payment_method).to_h)
         format.html { redirect_to store_index_url, notice: 'Thank you for your order.' }
         format.json { render :show, status: :created, location: @order }
       else
@@ -81,7 +81,7 @@ class OrdersController < ApplicationController
       order_params.delete(:payment_method)
       unless payment_type.nil?
         order_params[:payment_type_id] = payment_type.id
-        order_params.merge(pay_type_params(payment_type.id))
+        order_params.merge(pay_type_params(payment_type.payment_method))
         order_params.permit!
       end
       return order_params
@@ -93,12 +93,12 @@ class OrdersController < ApplicationController
       end
     end
 
-    def pay_type_params(payment_type_id)
-      if payment_type_id == "1"
+    def pay_type_params(payment_method)
+      if payment_method == "Check"
         params.require(:order).permit(:routing_number, :account_number)
-      elsif payment_type_id == "2"
+      elsif payment_method == "Credit card"
         params.require(:order).permit(:credit_card_number, :expiration_date)
-      elsif payment_type_id == "3"
+      elsif payment_method == "Purchase order"
         params.require(:order).permit(:po_number)
       else
         {}
