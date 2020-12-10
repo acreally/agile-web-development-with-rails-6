@@ -11,29 +11,29 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "creating a User" do
+    new_user_name = "System Test User"
     visit users_url
     click_on "New User"
 
-    fill_in "Name", with: "System Test User"
+    fill_in "Name", with: new_user_name
     fill_in "Password", with: 'secret'
     fill_in "Password confirmation", with: 'secret'
     click_on "Create User"
 
-    assert_text "User was successfully created"
-    click_on "Back"
+    assert_text "User #{new_user_name} was successfully created"
   end
 
   test "updating a User" do
+    updated_user_name = "Updated User"
     visit users_url
     click_on "Edit", match: :first
 
-    fill_in "Name", with: "Updated User"
+    fill_in "Name", with: updated_user_name
     fill_in "Password", with: 'secret'
     fill_in "Password confirmation", with: 'secret'
     click_on "Update User"
 
-    assert_text "User was successfully updated"
-    click_on "Back"
+    assert_text "User #{updated_user_name} was successfully updated"
   end
 
   test "destroying a User" do
