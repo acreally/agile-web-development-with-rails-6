@@ -37,6 +37,8 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test "destroying a User" do
+    @user = users(:two)
+    login_as @user
     visit users_url
     page.accept_confirm do
       click_on "Destroy", match: :first
