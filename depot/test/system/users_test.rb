@@ -46,4 +46,23 @@ class UsersTest < ApplicationSystemTestCase
 
     assert_text "User was successfully destroyed"
   end
+
+  test "cannot destroy the last admin" do
+    @user = users(:two)
+    login_as @user
+    visit users_url
+    page.accept_confirm do
+      click_on "Destroy", match: :first
+    end
+
+    assert_text "User was successfully destroyed"
+
+    visit users_url
+    page.accept_confirm do
+      click_on "Destroy", match: :first
+    end
+
+    assert_text "Can't delete last user"
+  end
+
 end
