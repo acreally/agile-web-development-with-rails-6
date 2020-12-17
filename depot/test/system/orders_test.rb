@@ -17,7 +17,7 @@ class OrdersTest < ApplicationSystemTestCase
 
     assert_no_selector "#order_routing_number"
     assert_no_selector "#order_account_number"
-    select "Check", from: "Pay type"
+    select "Check", from: "Pay with"
     assert_selector "#order_routing_number"
     assert_selector "#order_account_number"
     fill_in "Routing #", with: "123"
@@ -31,7 +31,7 @@ class OrdersTest < ApplicationSystemTestCase
 
     assert_no_selector "#order_credit_card_number"
     assert_no_selector "#order_expiration_date"
-    select "Credit card", from: "Pay type"
+    select "Credit Card", from: "Pay with"
     assert_selector "#order_credit_card_number"
     assert_selector "#order_expiration_date"
     fill_in "CC #", with: "4111111111111111"
@@ -44,7 +44,7 @@ class OrdersTest < ApplicationSystemTestCase
     arrange_create_order("Purchase order")
 
     assert_no_selector "#order_po_number"
-    select "Purchase order", from: "Pay type"
+    select "Purchase Order", from: "Pay with"
     assert_selector "#order_po_number"
     fill_in "PO #", with: "12345678"
 
@@ -56,9 +56,9 @@ class OrdersTest < ApplicationSystemTestCase
     click_on "Edit", match: :first
 
     fill_in "Address", with: @order.address
-    fill_in "Email", with: @order.email
+    fill_in "E-mail", with: @order.email
     fill_in "Name", with: @order.name
-    select "Check", from: "Pay type"
+    select "Check", from: "Pay with"
     fill_in "Routing #", with: "123"
     fill_in "Account #", with: "12345678"
 
@@ -90,7 +90,7 @@ class OrdersTest < ApplicationSystemTestCase
     click_on "Checkout"
 
     fill_in "Address", with: @order.address
-    fill_in "Email", with: @order.email
+    fill_in "E-mail", with: @order.email
     fill_in "Name", with: @order.name
 
     assert_selector "#order_pay_type"
@@ -102,7 +102,7 @@ class OrdersTest < ApplicationSystemTestCase
       click_on "Place Order"
     end
 
-    assert_text "Thank you for your order."
+    assert_text "Thank you for your order"
 
     orders = Order.all
     assert_equal 1, orders.size
