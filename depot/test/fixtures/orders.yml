@@ -6,6 +6,13 @@ one:
   email: dave@example.org
   payment_type: one
 
+another_one:
+  name: Dave Thomas
+  address: MyText
+  email: dave@example.org
+  payment_type: two
+  created_at: <%= 2.days.ago %>
+
 two:
   name: MyString
   address: MyText
